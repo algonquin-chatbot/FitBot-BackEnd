@@ -11,11 +11,14 @@ firebase.initializeApp(config);
 var app = express()
 app.use(bodyParser.json())
 
+app.set('port', (process.env.PORT || 5000));
+
 app.get('/', (req, res) => {
         res.status(200).json({ 'error' : null, 'message' : 'Yes, this works.'})
 })
 authen.signIn()
 app.post('/webhook', webhook.queryWebhook)
 
-app.listen(8080)
-console.log("Listening on port 8080...")
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
+});
