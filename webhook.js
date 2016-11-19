@@ -2,6 +2,8 @@
         Endpoint definition for webhooks.
  */
 
+'use strict';
+
 const firebase = require('firebase')
 
 module.exports.queryWebhook = (req, res) => {
