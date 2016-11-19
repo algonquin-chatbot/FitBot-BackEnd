@@ -28,6 +28,34 @@ app.get('/exercise', (req, res) => {
         })
 })
 
+app.post('/webhook', (req, res) => {
+
+        if (req.body.result.action === 'ebayShopping') {
+                let data = processExercise(req)
+
+                res.setHeader('Content-Type', 'application/json')
+                res.status(200).json(data)
+
+        }
+})
+
+function processExercise(req) {
+        console.log("Processing exercise ... ");
+
+        let parameter = req.body.result.parameters
+
+        // query firebase
+
+        console.log(parameter)
+
+        return {
+                "speech" : "testSpeech",
+                "displayText" : "testDisplayText",
+                "data" : "testData",
+                "source" : "testSource"
+        }
+}
+
 
 app.listen(8080)
 console.log("Listening on port 8080...")
