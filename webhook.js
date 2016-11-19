@@ -18,12 +18,12 @@ function processExercise(req) {
         console.log("Processing exercise ... ");
 
         // Extract data based on a parameter
-        let parameter = req.body.result.parameters
+        var parameter = req.body.result.parameters
 
         // query firebase
         return firebase.database().ref('/category').once('value').then( (result) => {
-                let speech = result.val().arms[0].description
-                let data = result.val().arms
+                var speech = result.val().arms[0].description
+                var data = result.val().arms
 
                 console.log(speech);
                 console.log(data);
