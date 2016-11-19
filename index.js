@@ -17,6 +17,7 @@ app.get('/', (req, res) => {
 app.get('/exercise', (req, res) => {
         firebase.auth().signInWithEmailAndPassword('admin@admin.com', 'adminadmin').then( () => {
                 console.log('Login succesfull!')
+
                 firebase.database().ref('/category').once('value').then( (data) => {
                         res.status(200).json(data.val())
                 }).catch((error) => {
@@ -30,12 +31,11 @@ app.get('/exercise', (req, res) => {
 
 app.post('/webhook', (req, res) => {
 
-        if (req.body.result.action === 'ebayShopping') {
+        if (req.body.result.action === 'getExcercise') {
                 let data = processExercise(req)
 
                 res.setHeader('Content-Type', 'application/json')
                 res.status(200).json(data)
-
         }
 })
 
@@ -44,16 +44,28 @@ function processExercise(req) {
 
         let parameter = req.body.result.parameters
 
-        // query firebase
+        let speech = ""
+        let data
 
         console.log(parameter)
 
-        return {
-                "speech" : "testSpeech",
-                "displayText" : "testDisplayText",
-                "data" : "testData",
-                "source" : "testSource"
-        }
+        // query firebase
+        firebase.database().ref('/category').once('value').then( (result) => {
+                speech = result.val().arms[0].description
+                data = result.val().arms
+        })
+        .then( () => {
+                console.log("get here?");
+                return {
+                        "speech" : speech,
+                        "displayText" : "testDisplayText",
+                        "data" : data,
+                        "source" : "FitBot-firebase"
+                }
+        })
+        .catch((error) => {
+                console.log(error);
+        })
 }
 
 
