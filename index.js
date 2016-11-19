@@ -29,31 +29,39 @@ app.get('/exercise', (req, res) => {
 })
 
 app.post('/webhook', (req, res) => {
+        if (req.body.result.action === 'getExercise') {
 
-        if (req.body.result.action === 'ebayShopping') {
-                let data = processExercise(req)
-
-                res.setHeader('Content-Type', 'application/json')
-                res.status(200).json(data)
-
+                processExercise(req).then( (data) => {
+                        res.setHeader('Content-Type', 'application/json')
+                        res.status(200).json(data)
+                })
         }
 })
 
 function processExercise(req) {
         console.log("Processing exercise ... ");
 
+        // Extract data based on a parameter
         let parameter = req.body.result.parameters
 
         // query firebase
+        return firebase.database().ref('/category').once('value').then( (result) => {
+                let speech = result.val().arms[0].description
+                let data = result.val().arms
 
-        console.log(parameter)
+                console.log(speech);
+                console.log(data);
 
-        return {
-                "speech" : "testSpeech",
-                "displayText" : "testDisplayText",
-                "data" : "testData",
-                "source" : "testSource"
-        }
+                return {
+                        "speech" : speech,
+                        "displayText" : "testDisplayText",
+                        "data" : data,
+                        "source" : "FitBot-firebase"
+                }
+
+        }).catch((error) => {
+                console.log(error);
+        })
 }
 
 
