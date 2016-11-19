@@ -18,15 +18,25 @@ function processExercise(req) {
         console.log("Processing exercise ... ");
 
         // Extract data based on a parameter
-        var parameter = req.body.result.parameters
+        let parameter = req.body.result.parameters.body_parts
 
         // query firebase
-        return firebase.database().ref('/category').once('value').then( (result) => {
-                var speech = result.val().arms[0].description
-                var data = result.val().arms
+        return firebase.database().ref('/exercisesByBodyPart').once('value').then( (result) => {
 
-                console.log(speech);
-                console.log(data);
+                let bodyPartdata = result.val()[parameter]
+
+                let speech
+                let data
+
+                // Filter out based on recommendation - ugly
+                // TODO: Better implementation plz
+                for(var i=0; i < bodyPartdata.length; i++){
+                        if (bodyPartdata[i].rating === 5) {
+                                speech = bodyPartdata[i].description
+                                data = bodyPartdata[i]
+                                break
+                        }
+                }
 
                 return {
                         "speech" : speech,
